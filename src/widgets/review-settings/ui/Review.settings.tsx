@@ -10,7 +10,8 @@ export const ReviewSettings: React.FC<IProps> = (props) => {
 
   return (
     <div className={`bg-gray-400/10 py-2 relative ${className}`} style={css}>
-      <div className="flex flex-row items-center gap-2 absolute top-4 right-2">
+      <div className="container-md relative">
+      <div className="flex flex-row items-center gap-2 absolute top-0 right-2">
         <button>
           <FaSave size={16}/>
         </button>
@@ -18,7 +19,6 @@ export const ReviewSettings: React.FC<IProps> = (props) => {
           Очистить
         </button>
       </div>
-      <div className="container-md">
         <div className="mt-2">
           <p>Категории</p>
           <CategoryFilter className="mt-2" />
