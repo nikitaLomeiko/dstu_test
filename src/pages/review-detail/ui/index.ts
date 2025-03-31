@@ -1,0 +1,1 @@
+export {ReviewDetail as default} from './ReviewDetail.page'
