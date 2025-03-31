@@ -14,7 +14,7 @@ export const LayoutApp: React.FC<IProps> = (props) => {
       <Header>
         <Navigation/>
       </Header>
-      <div className="container-md">{children}</div>
+      {children}
     </div>
   );
 };
