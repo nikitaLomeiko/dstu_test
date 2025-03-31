@@ -1,11 +1,12 @@
+import { LayoutApp } from 'widgets/layouts/layout-app'
 import { Routing } from './providers/routing'
 import './styles/index.css'
 
 function App() {
   return (
-    <div>
+    <LayoutApp>
       <Routing/>
-    </div>
+    </LayoutApp>
   )
 }
 
