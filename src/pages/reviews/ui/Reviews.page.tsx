@@ -1,7 +1,9 @@
+import { ReviewList } from "widgets/review-list"
+
 export const ReviewsPage = () => {
     return(
         <div>
-            reviews
+            <ReviewList className="mt-3"/>
         </div>
     )
 }
