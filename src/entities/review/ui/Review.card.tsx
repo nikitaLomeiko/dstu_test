@@ -2,7 +2,7 @@ import { IBaseComponent } from "shared/general/types/base-component.type";
 import { IReview } from "../model/types";
 import { Rating } from "shared/ui/rating";
 import { HiDotsVertical } from "react-icons/hi";
-import { FaRegUserCircle } from "react-icons/fa";
+import { ReviewHeader } from "./components/ReviewHeader";
 
 interface IProps extends Omit<IReview, "id">, IBaseComponent {}
 
@@ -15,19 +15,13 @@ export const ReviewCard: React.FC<IProps> = (props) => {
         <HiDotsVertical />
       </button>
       <div className="card-body">
-        <div className="flex flex-row gap-2">
-          <FaRegUserCircle size={24} />
-          <div>
-            <h5 className="card-title">{nickname}</h5>
-            <h6 className="card-subtitle mb-2 text-body-secondary underline !font-normal">{category}</h6>
-          </div>
-        </div>
+        <ReviewHeader nickname={nickname} category={category}/>
         <div className="mt-2">
           <div className="flex flex-row gap-2 !items-center">
             <Rating rating={rating} />
-            <p className="opacity-50">10 дней назад</p>
+            <p className="opacity-50">{dateUpdate === undefined ? date : `изменено: ${dateUpdate}`}</p>
           </div>
-          <p className="card-text mt-1 overflow-hidden line-clamp-10">{comment}</p>
+          <p className="card-text mt-1 overflow-hidden line-clamp-4">{comment}</p>
         </div>
         <button type="button" className="btn btn-link !p-0 mt-2">
           Читать больше

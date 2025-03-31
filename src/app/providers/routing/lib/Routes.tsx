@@ -1,4 +1,5 @@
 import { NotFoundPageLazy } from "pages/not-found";
+import { ReviewDetailPageLazy } from "pages/review-detail";
 import { ReviewsPageLazy } from "pages/reviews";
 import { RouteProps } from "react-router-dom";
 import { RoutePath } from "shared/config/route";
@@ -14,7 +15,7 @@ export const Routes: RouteProps[] = [
     },
     {
         path: RoutePath.reviewDetail.fullPath,
-        element: <ReviewsPageLazy/>
+        element: <ReviewDetailPageLazy/>
     },
     {
         path: RoutePath.notFound.fullPath,

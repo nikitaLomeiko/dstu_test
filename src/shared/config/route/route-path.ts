@@ -12,8 +12,8 @@ export const RoutePath: Record<enumPath, IRoute> = {
     fullPath: "/reviews",
   },
   [enumPath.reviewDetail]: {
-    path: "/reviews/detail/",
-    fullPath: "/reviews/detail/:id",
+    path: "/reviews/",
+    fullPath: "/reviews/:id",
   },
   [enumPath.notFound]: {
     path: "/not-found",

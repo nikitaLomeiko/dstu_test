@@ -1,1 +1,1 @@
-export {ReviewDetail as default} from './ReviewDetail.page'
+export {ReviewDetailPage as default} from './ReviewDetail.page'
