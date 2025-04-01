@@ -1,11 +1,11 @@
 import { AxiosInstance, type AxiosRequestConfig } from "axios";
-import { IClient } from "./model/types";
+import { IClient, typeRequestResponse } from "./model/types";
 import { BASE_API } from "./model";
 
 export const ApiClient = async <T>(
   { url, method = "GET", data, params, headers }: IClient,
   scheme: AxiosInstance = BASE_API
-): Promise<{ data: T; status: number; total: number | string }> => {
+): typeRequestResponse<T> => {
   const requestParams: AxiosRequestConfig = {
     method,
     url,
@@ -22,11 +22,7 @@ export const ApiClient = async <T>(
       total: res.headers["x-total-count"],
     }))
     .catch((err) => {
-      console.error(
-        "\nERROR MESSAGE:",
-        err.response?.data.message,
-        `\nSTATUS: ${err.response?.data.status}`
-      );
+      console.error("\nERROR MESSAGE:", err.response?.data.message, `\nSTATUS: ${err.response?.data.status}`);
 
       return {
         data: "isError" as unknown as T,

@@ -2,28 +2,28 @@ import { makeAutoObservable } from "mobx";
 import { IReview } from "../types";
 
 interface IInitialState {
+  page: number;
   reviews: IReview[];
   count: number;
+  limit: number;
 }
 
 class ReviewStore {
   state: IInitialState = {
     reviews: [],
     count: 0,
+    page: 1,
+    limit: 10,
   };
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  setReview(reviews: IReview[], count: number) {
-    this.state.reviews = reviews;
-    this.state.count = count;
-  }
-
-  addListRevview(reviews: IReview[]) {
+  addListReview(reviews: IReview[], count: number) {
     this.state.reviews = [...this.state.reviews, ...reviews];
-    this.state.count += reviews.length;
+    this.state.count = count;
+    this.state.page++;
   }
 
   addNewReview(review: IReview) {

@@ -1,3 +1,3 @@
 export enum EndpointsEnum {
-  review = "/review"
+  review = "/reviews",
 }

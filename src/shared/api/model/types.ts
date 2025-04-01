@@ -11,3 +11,5 @@ export interface IClient {
     | undefined;
   responseType?: ResponseType;
 }
+
+export type typeRequestResponse<T> = Promise<{ data: T; status: number; total: number | string }>;
