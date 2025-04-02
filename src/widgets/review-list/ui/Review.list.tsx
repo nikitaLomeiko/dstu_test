@@ -1,38 +1,45 @@
 import { IReview, ReviewCard, reviewStore } from "entities/review";
 import { IBaseComponent } from "shared/general/types/base-component.type";
 import { observer } from "mobx-react-lite";
-import { deleteReviewById, ReviewActionsCol } from "features/review-form";
+import { changeReviewById, deleteReviewById, ReviewActionsCol, ReviewForm } from "features/review-form";
 import { ListWrapper } from "./components/List.wrapper";
 import { EndpointsEnum } from "shared/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { TypeClientResult } from "shared/api/model/types";
+import { useState } from "react";
 
 export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
   const {
     state: { reviews },
   } = reviewStore;
 
+  const [changedId, setChangedId] = useState<number | null>(null);
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
+  const mutationRemove = useMutation({
     mutationFn: deleteReviewById,
     onSuccess: (_, id) => {
-      reviewStore.deleteReview(id)
-      queryClient.setQueryData([EndpointsEnum.review], (oldData: TypeClientResult<IReview[]>) => {
-        return {
-          ...oldData,
-          data: (oldData.data as IReview[]).filter((review: { id: number }) => review.id !== id),
-          total: Number(oldData.total) - 1
-        };
-      });
-
+      reviewStore.deleteReview(id);
+      queryClient.setQueryData([EndpointsEnum.review], () => ({ data: reviews, total: reviews.length }));
       queryClient.invalidateQueries({ queryKey: [EndpointsEnum.review] });
     },
   });
 
-  const handleRemove = async (id: number, e: React.MouseEvent) => {
-    e.preventDefault();
-    mutation.mutate(id);
+  const mutationUpdate = useMutation({
+    mutationFn: changeReviewById,
+    onSuccess: (_, review) => {
+      reviewStore.changeReview(review);
+      queryClient.setQueryData([EndpointsEnum.review], () => ({ data: reviews, total: reviews.length }));
+      queryClient.invalidateQueries({ queryKey: [EndpointsEnum.review] });
+      setChangedId(null)
+    },
+  });
+
+  const handleRemove = async (id: number) => {
+    mutationRemove.mutate(id);
+  };
+
+  const handleUpdate = async (review: IReview) => {
+    mutationUpdate.mutate(review);
   };
 
   return (
@@ -41,7 +48,18 @@ export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
         <ReviewCard
           key={review.id}
           {...review}
-          featureSlot={<ReviewActionsCol onChange={() => null} onDelete={(e) => handleRemove(review.id, e)} />}
+          isChange={review.id === changedId}
+          featureSlot={
+            <ReviewActionsCol onChange={() => setChangedId(review.id)} onDelete={() => handleRemove(review.id)} />
+          }
+          formSlot={
+            <ReviewForm
+              initialForm={review}
+              onPresent={handleUpdate}
+              onCancel={() => setChangedId(null)}
+              className="!p-5"
+            />
+          }
         />
       ))}
     </ListWrapper>
