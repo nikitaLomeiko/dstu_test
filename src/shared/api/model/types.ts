@@ -12,4 +12,16 @@ export interface IClient {
   responseType?: ResponseType;
 }
 
+export type TypeClientResult<T> =
+  | {
+      data: T;
+      status: number;
+      total: string;
+    }
+  | {
+      data: string;
+      status: number;
+      total: string;
+    };
+
 export type typeRequestResponse<T> = Promise<{ data: T; status: number; total: number | string }>;

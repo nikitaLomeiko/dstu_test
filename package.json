@@ -8,10 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "json-server --watch ./server/json/data.json -p 5000"
+    "server": "json-server --watch ./.server/json/server.data.json -p 5000"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.0.17",
+    "@tanstack/react-query": "^5.71.1",
     "axios": "^1.8.4",
     "bootstrap": "^5.3.3",
     "mobx": "^6.13.7",
@@ -21,13 +21,13 @@
     "react-emotion": "^10.0.0",
     "react-hook-form": "^7.55.0",
     "react-icons": "^5.5.0",
-    "react-query": "^3.39.3",
     "react-router-dom": "^7.4.1",
-    "react-use": "^17.6.0",
-    "tailwindcss": "^4.0.17"
+    "react-use": "^17.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@tailwindcss/postcss": "^4.1.1",
+    "@tailwindcss/vite": "^4.1.1",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
@@ -36,6 +36,8 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
     "json-server": "^0.17.4",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.1",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0"

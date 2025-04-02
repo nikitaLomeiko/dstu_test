@@ -1,12 +1,15 @@
-import { ApiClient, EndpointsEnum } from "shared/api";
+import { ApiClient, BASE_API, EndpointsEnum } from "shared/api";
 import { IReview } from "../types";
 import { typeRequestResponse } from "shared/api/model/types";
 
 export const getPageReview = async (page: number, limit: number): Promise<typeRequestResponse<IReview[]>> => {
-  const result = await ApiClient<IReview[]>({
-    url: `${EndpointsEnum.review}?_page=${page}&_limit=${limit}`,
-    method: "GET",
-  });
+  const result = await ApiClient(
+    {
+      url: `${EndpointsEnum.review}?_page=${page}&_limit=${limit}`,
+      method: "GET",
+    },
+    BASE_API
+  );
 
-  return result;
+  return { data: result.data as IReview[], status: result.status, total: result.total };
 };

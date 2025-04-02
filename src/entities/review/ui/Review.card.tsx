@@ -4,18 +4,27 @@ import { Rating } from "shared/ui/rating";
 import { HiDotsVertical } from "react-icons/hi";
 import { ReviewHeader } from "./components/ReviewHeader";
 
-interface IProps extends Omit<IReview, "id">, IBaseComponent {}
+interface IProps extends Omit<IReview, "id">, IBaseComponent {
+  featureSlot?: React.ReactNode
+}
 
 export const ReviewCard: React.FC<IProps> = (props) => {
-  const { className, css, date, dateUpdate, nickname, rating, category, comment } = props;
+  const { className, css, date, dateUpdate, nickname, rating, category, comment, featureSlot } = props;
 
   return (
     <div className={`card !w-full relative ${className}`} style={{ width: "18rem", ...css }}>
-      <button className="absolute top-4 right-4">
+      <button
+        className="dropdown-toggle h-[25px] after:opacity-0 absolute top-4 right-4"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
         <HiDotsVertical />
       </button>
+      <div className="dropdown-menu h-fit">
+        {featureSlot}
+      </div>
       <div className="card-body">
-        <ReviewHeader nickname={nickname} category={category}/>
+        <ReviewHeader nickname={nickname} category={category} />
         <div className="mt-2">
           <div className="flex flex-row gap-2 !items-center">
             <Rating rating={rating} />

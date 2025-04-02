@@ -1,68 +1,49 @@
-import { getPageReview, ReviewCard, reviewStore } from "entities/review";
-import { useState } from "react";
-import { useQuery } from "react-query";
-import { EndpointsEnum } from "shared/api";
+import { IReview, ReviewCard, reviewStore } from "entities/review";
 import { IBaseComponent } from "shared/general/types/base-component.type";
 import { observer } from "mobx-react-lite";
-import { MdError } from "react-icons/md";
-import { useIntersectionObserver } from "shared/lib/hooks/useIntersectionObserver";
+import { deleteReviewById, ReviewActionsCol } from "features/review-form";
+import { ListWrapper } from "./components/List.wrapper";
+import { EndpointsEnum } from "shared/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { TypeClientResult } from "shared/api/model/types";
 
 export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
-  const { className, css } = props;
-
   const {
-    state: { count, limit, page, reviews },
+    state: { reviews },
   } = reviewStore;
 
-  const [shouldFetch, setShouldFetch] = useState(false);
+  const queryClient = useQueryClient();
 
-  const { isLoading, isError } = useQuery(
-    EndpointsEnum.review,
-    async () => {
-      const data = await getPageReview(page, limit);
+  const mutation = useMutation({
+    mutationFn: deleteReviewById,
+    onSuccess: (_, id) => {
+      reviewStore.deleteReview(id)
+      queryClient.setQueryData([EndpointsEnum.review], (oldData: TypeClientResult<IReview[]>) => {
+        return {
+          ...oldData,
+          data: (oldData.data as IReview[]).filter((review: { id: number }) => review.id !== id),
+          total: Number(oldData.total) - 1
+        };
+      });
 
-      if (data.status === 200) {
-        reviewStore.addListReview(data.data, Number(data.total));
-      }
+      queryClient.invalidateQueries({ queryKey: [EndpointsEnum.review] });
     },
-    { enabled: shouldFetch }
-  );
+  });
 
-  const [ref] = useIntersectionObserver<HTMLDivElement>({ onIntersect: setShouldFetch });
-
-  if (isLoading) {
-    return (
-      <div className={`w-full items-center flex justify-center ${className}`} style={css}>
-        <div className="spinner-border text-primary mt-2" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className={`w-full items-center flex justify-center ${className}`} style={css}>
-        <div className="flex flex-row items-center gap-1">
-          <MdError className="fill-red-500" />
-          <p className="text-red-500">Ошибка при загрузке отзывов</p>
-        </div>
-      </div>
-    );
-  }
+  const handleRemove = async (id: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    mutation.mutate(id);
+  };
 
   return (
-    <div className={className} style={css}>
-      <div className={`flex flex-row items-center gap-1`}>
-        <p>{count}</p>
-        <p className="font-medium">отзывов</p>
-      </div>
-      <div className="flex flex-col gap-4 mt-2">
-        {reviews.map((review) => (
-          <ReviewCard key={review.id} {...review} />
-        ))}
-        {ref && <div ref={ref}></div>}
-      </div>
-    </div>
+    <ListWrapper {...props}>
+      {reviews.map((review) => (
+        <ReviewCard
+          key={review.id}
+          {...review}
+          featureSlot={<ReviewActionsCol onChange={() => null} onDelete={(e) => handleRemove(review.id, e)} />}
+        />
+      ))}
+    </ListWrapper>
   );
 });
