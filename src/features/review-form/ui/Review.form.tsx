@@ -8,7 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 
 interface IProps extends IBaseComponent {
   onCancel?: () => void;
-  initialForm?: IReview;
+  initialForm?: Partial<IReview>;
   onPresent: (data: IReview) => void;
 }
 

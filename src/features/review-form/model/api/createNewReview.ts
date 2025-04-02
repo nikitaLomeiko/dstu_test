@@ -15,7 +15,7 @@ export const createNewReview = async (data: IReview): Promise<typeRequestRespons
   const result = await ApiClient<IReview>({
     url: `${EndpointsEnum.review}`,
     method: "POST",
-    body: data,
+    data,
   });
 
   return result;

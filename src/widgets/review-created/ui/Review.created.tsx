@@ -1,10 +1,30 @@
-import { ReviewForm } from "features/review-form";
+import { QueryClient, useMutation } from "@tanstack/react-query";
+import { IReview, reviewStore } from "entities/review";
+import { createNewReview, ReviewForm } from "features/review-form";
+import { EndpointsEnum } from "shared/api";
 import { IBaseComponent } from "shared/general/types/base-component.type";
 
 interface IProps extends IBaseComponent {}
 
 export const ReviewCreated: React.FC<IProps> = (props) => {
   const { className, css } = props;
+
+  const {state: {reviews}} = reviewStore
+
+  const queryClient = new QueryClient()
+
+  const mutationCreate = useMutation({
+    mutationFn: createNewReview,
+    onSuccess: (_, review) => {
+      reviewStore.addNewReview(review);
+      queryClient.setQueryData([EndpointsEnum.review], () => ({ data: reviews, total: reviews.length }));
+      queryClient.invalidateQueries({ queryKey: [EndpointsEnum.review] });
+    },
+  });
+
+  const handleCreate = (data: IReview) => {
+    mutationCreate.mutate(data)
+  }
 
 
   return (
@@ -22,7 +42,7 @@ export const ReviewCreated: React.FC<IProps> = (props) => {
         </button>
       </p>
       <div className="collapse visible py-3" id="collapseExample">
-          <ReviewForm/>
+          <ReviewForm initialForm={{rating: 1}} onPresent={handleCreate}/>
       </div>
     </div>
   );

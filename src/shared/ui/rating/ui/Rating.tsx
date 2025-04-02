@@ -20,8 +20,7 @@ export const Rating: React.FC<IProps> = (props) => {
           <FaStar
             onClick={() => onChange?.(index+1)}
             onMouseEnter={() => setStarIndex(onChange !== undefined ? (index+1) : 0)}
-            className={`transition-colors cursor-pointer ${index < starIndexHover ? 'fill-[#ffb70350]' : ''}`}
-            fill={rating > index ? "#ffb703" : "#33333340"}
+            className={`transition-colors cursor-pointer ${rating > index ? '!fill-[#ffb703]' : 'fill-[#33333340]'} ${index < starIndexHover ? 'fill-[#ffb70350]' : ''}`}
           />
         ))}
     </div>

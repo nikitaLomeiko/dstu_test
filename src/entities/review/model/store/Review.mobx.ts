@@ -27,7 +27,7 @@ class ReviewStore {
   }
 
   addNewReview(review: IReview) {
-    this.state.reviews.push(review);
+    this.state.reviews.unshift(review);
     this.state.count++;
   }
 
