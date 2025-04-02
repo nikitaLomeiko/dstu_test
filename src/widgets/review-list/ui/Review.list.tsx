@@ -30,7 +30,7 @@ export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
       reviewStore.changeReview(review);
       queryClient.setQueryData([EndpointsEnum.review], () => ({ data: reviews, total: reviews.length }));
       queryClient.invalidateQueries({ queryKey: [EndpointsEnum.review] });
-      setChangedId(null)
+      setChangedId(null);
     },
   });
 
@@ -38,8 +38,8 @@ export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
     mutationRemove.mutate(id);
   };
 
-  const handleUpdate = async (review: IReview) => {
-    mutationUpdate.mutate(review);
+  const handleUpdate = async (review: IReview, clearFunc: () => void) => {
+    mutationUpdate.mutate(review, {onSuccess: clearFunc});
   };
 
   return (
@@ -54,6 +54,7 @@ export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
           }
           formSlot={
             <ReviewForm
+              error={mutationUpdate.error?.message}
               initialForm={review}
               onPresent={handleUpdate}
               onCancel={() => setChangedId(null)}

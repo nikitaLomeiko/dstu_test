@@ -9,11 +9,12 @@ import { Controller, useForm } from "react-hook-form";
 interface IProps extends IBaseComponent {
   onCancel?: () => void;
   initialForm?: Partial<IReview>;
-  onPresent: (data: IReview) => void;
+  onPresent: (data: IReview, clearFunc: () => void) => void;
+  error?: string;
 }
 
 export const ReviewForm: React.FC<IProps> = (props) => {
-  const { className, css, onCancel, initialForm, onPresent } = props;
+  const { className, css, onCancel, initialForm, onPresent, error } = props;
 
   const {
     register,
@@ -25,13 +26,17 @@ export const ReviewForm: React.FC<IProps> = (props) => {
   } = useForm<IReview>({ defaultValues: initialForm });
 
   const onSubmit = handleSubmit((data) => {
-    onPresent({
-      ...data,
-      date: initialForm === undefined ? new Date().toLocaleDateString("ru-RU") : data.date,
-      dateUpdate: initialForm === undefined ? undefined : new Date().toLocaleDateString("ru-RU"),
-    });
-    clearErrors();
-    reset();
+    onPresent(
+      {
+        ...data,
+        date: initialForm === undefined ? new Date().toLocaleDateString("ru-RU") : data.date,
+        dateUpdate: initialForm === undefined ? undefined : new Date().toLocaleDateString("ru-RU"),
+      },
+      () => {
+        clearErrors();
+        reset();
+      }
+    );
   });
 
   return (
@@ -91,6 +96,7 @@ export const ReviewForm: React.FC<IProps> = (props) => {
         ></textarea>
         {errors.comment?.message !== undefined && <p className="text-md text-red-500">{errors.comment?.message}</p>}
       </div>
+      {error !== undefined && <p className="text-md text-red-500">{error}</p>}
       <div className="flex flex-row justify-between items-center">
         <Controller
           control={control}

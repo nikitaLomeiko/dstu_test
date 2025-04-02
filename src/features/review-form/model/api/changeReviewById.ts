@@ -9,7 +9,7 @@ export const changeReviewById = async (newReview: IReview): Promise<typeRequestR
   });
 
   if (review.data.length !== 0) {
-    return { data: "Такое имя уже существует", status: 0, total: 0 };
+    throw new Error("Такое имя уже существует");
   }
 
   const result = await ApiClient<IReview[]>({

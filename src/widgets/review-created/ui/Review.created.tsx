@@ -4,9 +4,7 @@ import { createNewReview, ReviewForm } from "features/review-form";
 import { EndpointsEnum } from "shared/api";
 import { IBaseComponent } from "shared/general/types/base-component.type";
 
-interface IProps extends IBaseComponent {}
-
-export const ReviewCreated: React.FC<IProps> = (props) => {
+export const ReviewCreated: React.FC<IBaseComponent> = (props) => {
   const { className, css } = props;
 
   const {state: {reviews}} = reviewStore
@@ -22,10 +20,9 @@ export const ReviewCreated: React.FC<IProps> = (props) => {
     },
   });
 
-  const handleCreate = (data: IReview) => {
-    mutationCreate.mutate(data)
+  const handleCreate = (data: IReview, clearFunc: () => void) => {
+    mutationCreate.mutate(data, {onSuccess: clearFunc})
   }
-
 
   return (
     <div className={`navbar-toggle w-full ${className}`} style={css}>
@@ -42,7 +39,7 @@ export const ReviewCreated: React.FC<IProps> = (props) => {
         </button>
       </p>
       <div className="collapse visible py-3" id="collapseExample">
-          <ReviewForm initialForm={{rating: 1}} onPresent={handleCreate}/>
+          <ReviewForm error={mutationCreate.error?.message} initialForm={{rating: 1}} onPresent={handleCreate}/>
       </div>
     </div>
   );
