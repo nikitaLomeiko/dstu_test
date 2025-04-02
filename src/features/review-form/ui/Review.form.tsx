@@ -25,7 +25,11 @@ export const ReviewForm: React.FC<IProps> = (props) => {
   } = useForm<IReview>({ defaultValues: initialForm });
 
   const onSubmit = handleSubmit((data) => {
-    onPresent(data);
+    onPresent({
+      ...data,
+      date: initialForm === undefined ? new Date().toLocaleDateString("ru-RU") : data.date,
+      dateUpdate: initialForm === undefined ? undefined : new Date().toLocaleDateString("ru-RU"),
+    });
     clearErrors();
     reset();
   });
