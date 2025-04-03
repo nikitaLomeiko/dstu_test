@@ -1,5 +1,6 @@
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { IReview, reviewStore } from "entities/review";
+import { categoriesConfig } from "features/review-filter/model/config/categories.config";
 import { createNewReview, ReviewForm } from "features/review-form";
 import { EndpointsEnum } from "shared/api";
 import { IBaseComponent } from "shared/general/types/base-component.type";
@@ -39,7 +40,7 @@ export const ReviewCreated: React.FC<IBaseComponent> = (props) => {
         </button>
       </p>
       <div className="collapse visible py-3" id="collapseExample">
-          <ReviewForm error={mutationCreate.error?.message} initialForm={{rating: 1}} onPresent={handleCreate}/>
+          <ReviewForm categoryConfig={categoriesConfig} error={mutationCreate.error?.message} initialForm={{rating: 1}} onPresent={handleCreate}/>
       </div>
     </div>
   );

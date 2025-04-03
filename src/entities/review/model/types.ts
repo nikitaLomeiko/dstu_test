@@ -6,4 +6,5 @@ export interface IReview {
     rating: number;
     date: string;
     dateUpdate?: string;
+    timestamp: number
 }

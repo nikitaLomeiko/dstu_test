@@ -6,6 +6,7 @@ import { ListWrapper } from "./components/List.wrapper";
 import { EndpointsEnum } from "shared/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { categoriesConfig } from "features/review-filter/model/config/categories.config";
 
 export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
   const {
@@ -56,6 +57,7 @@ export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
           }
           formSlot={
             <ReviewForm
+            categoryConfig={categoriesConfig}
               error={mutationUpdate.error?.message}
               initialForm={review}
               onPresent={handleUpdate}

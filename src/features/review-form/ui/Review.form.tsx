@@ -11,10 +11,11 @@ interface IProps extends IBaseComponent {
   initialForm?: Partial<IReview>;
   onPresent: (data: IReview, clearFunc: () => void) => void;
   error?: string;
+  categoryConfig: string[]
 }
 
 export const ReviewForm: React.FC<IProps> = (props) => {
-  const { className, css, onCancel, initialForm, onPresent, error } = props;
+  const { className, css, onCancel, initialForm, onPresent, error, categoryConfig } = props;
 
   const {
     register,
@@ -31,6 +32,7 @@ export const ReviewForm: React.FC<IProps> = (props) => {
         ...data,
         date: initialForm === undefined ? new Date().toLocaleDateString("ru-RU") : data.date,
         dateUpdate: initialForm === undefined ? undefined : new Date().toLocaleDateString("ru-RU"),
+        timestamp: new Date().getTime()
       },
       () => {
         clearErrors();
@@ -70,11 +72,7 @@ export const ReviewForm: React.FC<IProps> = (props) => {
             errors.category?.message !== undefined ? "!border-red-500" : ""
           }`}
         >
-          <option selected>Рестораны</option>
-          <option>Книги</option>
-          <option>Игры</option>
-          <option>Фильмы</option>
-          <option>Технологии</option>
+          {categoryConfig.map((item, index) => <option selected={index === 0}>{item}</option>)}
         </select>
       </div>
       <div className="mb-3">

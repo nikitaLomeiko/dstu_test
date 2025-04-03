@@ -7,6 +7,7 @@ import { IBaseComponent } from "shared/general/types/base-component.type";
 import { useIntersectionObserver } from "shared/lib/hooks/useIntersectionObserver";
 import { filterStore } from "features/review-filter/model";
 import { observer } from "mobx-react-lite";
+import { sortStore } from "features/review-sort/model";
 
 interface IProps extends IBaseComponent {
   children: React.ReactNode;
@@ -20,8 +21,12 @@ export const ListWrapper: React.FC<IProps> = observer((props) => {
   } = reviewStore;
 
   const {
-    state: { queryString },
+    state: { queryString: filterString },
   } = filterStore;
+
+  const {
+    state: { queryString: sortString },
+  } = sortStore;
 
   const [shouldFetch, setShouldFetch] = useState(true);
 
@@ -30,12 +35,12 @@ export const ListWrapper: React.FC<IProps> = observer((props) => {
   useEffect(() => {
     setShouldFetch(true)
     reviewStore.clearAll()
-  }, [queryString])
+  }, [filterString, sortString])
 
   const { isLoading, isError } = useQuery({
     queryKey: [EndpointsEnum.review],
     queryFn: async () => {
-      const data = await getPageReview(page, limit, queryString);
+      const data = await getPageReview(page, limit, `${filterString}&${sortString}`);
 
       if (data.status === 200) {
         reviewStore.addListReview(data.data, Number(data.total));
@@ -70,7 +75,7 @@ export const ListWrapper: React.FC<IProps> = observer((props) => {
         </div>
       )}
       <div className="flex flex-col gap-4 mt-2">{children}</div>
-      {page*limit < count+limit && <div ref={ref}>писюн</div>}
+      {page*limit < count+limit && <div ref={ref}></div>}
     </div>
   );
 });

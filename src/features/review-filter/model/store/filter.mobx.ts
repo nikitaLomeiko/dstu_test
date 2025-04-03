@@ -25,8 +25,6 @@ class FilterStore {
       this.state.categorySelectIds.reduce((prev, cuurent) => {
         return (prev += `category_like=${categoriesConfig[cuurent]}&`);
       }, "") + `rating_gte=${this.state.rating}`;
-
-    console.log(this.state.queryString);
   }
 
   toggleSelectCategory(id: number) {
