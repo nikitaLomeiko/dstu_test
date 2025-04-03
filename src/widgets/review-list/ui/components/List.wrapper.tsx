@@ -39,7 +39,7 @@ export const ListWrapper: React.FC<IProps> = observer((props) => {
   const { isLoading, isError } = useQuery({
     queryKey: [EndpointsEnum.review],
     queryFn: async () => {
-      const data = await getPageReview(1, limit, `${filterString}&${sortString}`);
+      const data = await getPageReview(page, limit, `${filterString}&${sortString}`);
 
       if (data.status === 200) {
         reviewStore.addListReview(data.data, Number(data.total));

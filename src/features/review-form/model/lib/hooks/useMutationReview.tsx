@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { changeReviewById, createNewReview, deleteReviewById } from "../../api";
-import { IReview, reviewStore } from "entities/review";
+import { IReview } from "entities/review";
 import { EndpointsEnum } from "shared/api";
 
 export const useMutationReview = (reviews: IReview[]) => {
