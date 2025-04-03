@@ -1,10 +1,8 @@
 import { IReview, ReviewCard, reviewStore } from "entities/review";
 import { IBaseComponent } from "shared/general/types/base-component.type";
 import { observer } from "mobx-react-lite";
-import { changeReviewById, deleteReviewById, ReviewActionsCol, ReviewForm } from "features/review-form";
+import { ReviewActionsCol, ReviewForm, useMutationReview } from "features/review-form";
 import { ListWrapper } from "./components/List.wrapper";
-import { EndpointsEnum } from "shared/api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { categoriesConfig } from "features/review-filter/model/config/categories.config";
 
@@ -14,33 +12,20 @@ export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
   } = reviewStore;
 
   const [changedId, setChangedId] = useState<string | null>(null);
-  const queryClient = useQueryClient();
-
-  const mutationRemove = useMutation({
-    mutationFn: deleteReviewById,
-    onSuccess: (_, id) => {
-      reviewStore.deleteReview(id);
-      queryClient.setQueryData([EndpointsEnum.review], () => ({ data: reviews, total: reviews.length }));
-      queryClient.invalidateQueries({ queryKey: [EndpointsEnum.review] });
-    },
-  });
-
-  const mutationUpdate = useMutation({
-    mutationFn: changeReviewById,
-    onSuccess: (_, review) => {
-      reviewStore.changeReview(review);
-      queryClient.setQueryData([EndpointsEnum.review], () => ({ data: reviews, total: reviews.length }));
-      queryClient.invalidateQueries({ queryKey: [EndpointsEnum.review] });
-      setChangedId(null);
-    },
-  });
+  const { mutationRemove, mutationUpdate } = useMutationReview(reviews);
 
   const handleRemove = async (id: string) => {
-    mutationRemove.mutate(id);
+    mutationRemove.mutate(id, { onSuccess: () => reviewStore.deleteReview(id) });
   };
 
   const handleUpdate = async (review: IReview, clearFunc: () => void) => {
-    mutationUpdate.mutate(review, { onSuccess: clearFunc });
+    mutationUpdate.mutate(review, {
+      onSuccess: () => {
+        reviewStore.changeReview(review);
+        setChangedId(null);
+        clearFunc();
+      },
+    });
   };
 
   return (
@@ -51,13 +36,9 @@ export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
             <ReviewCard
               key={review.id}
               {...review}
-              isChange={review.id
-                 === changedId}
+              isChange={review.id === changedId}
               featureSlot={
-                <ReviewActionsCol
-                  onChange={() => setChangedId(review.id)}
-                  onDelete={() => handleRemove(review.id)}
-                />
+                <ReviewActionsCol onChange={() => setChangedId(review.id)} onDelete={() => handleRemove(review.id)} />
               }
               formSlot={
                 <ReviewForm

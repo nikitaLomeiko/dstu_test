@@ -1,28 +1,19 @@
-import { QueryClient, useMutation } from "@tanstack/react-query";
 import { IReview, reviewStore } from "entities/review";
 import { categoriesConfig } from "features/review-filter/model/config/categories.config";
-import { createNewReview, ReviewForm } from "features/review-form";
-import { EndpointsEnum } from "shared/api";
+import { ReviewForm, useMutationReview } from "features/review-form";
 import { IBaseComponent } from "shared/general/types/base-component.type";
 
 export const ReviewCreated: React.FC<IBaseComponent> = (props) => {
   const { className, css } = props;
 
   const {state: {reviews}} = reviewStore
-
-  const queryClient = new QueryClient()
-
-  const mutationCreate = useMutation({
-    mutationFn: createNewReview,
-    onSuccess: (_, review) => {
-      reviewStore.addNewReview(review);
-      queryClient.setQueryData([EndpointsEnum.review], () => ({ data: reviews, total: reviews.length }));
-      queryClient.invalidateQueries({ queryKey: [EndpointsEnum.review] });
-    },
-  });
+  const {mutationCreate} = useMutationReview(reviews)
 
   const handleCreate = (data: IReview, clearFunc: () => void) => {
-    mutationCreate.mutate(data, {onSuccess: clearFunc})
+    mutationCreate.mutate(data, {onSuccess: () => {
+      reviewStore.addNewReview(data);
+      clearFunc()
+    }})
   }
 
   return (

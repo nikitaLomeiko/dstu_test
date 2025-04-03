@@ -1,14 +1,14 @@
 import { getReviewById, incrementViewdReview, IReview, ReviewDetail, reviewStore } from "entities/review";
 import { IBaseComponent } from "shared/general/types/base-component.type";
-import { MdError } from "react-icons/md";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { EndpointsEnum } from "shared/api";
 import { useEffect, useState } from "react";
-import { changeReviewById, deleteReviewById, ReviewActionsRow, ReviewForm } from "features/review-form";
+import { ReviewActionsRow, ReviewForm, useMutationReview } from "features/review-form";
 import { observer } from "mobx-react-lite";
 import { categoriesConfig } from "features/review-filter";
 import { useNavigate } from "react-router-dom";
 import { RoutePath } from "shared/config/route";
+import { StatusData } from "shared/components/status-data";
 
 interface IProps extends IBaseComponent {
   id: string;
@@ -27,39 +27,38 @@ export const ReviewDetailWidget: React.FC<IProps> = observer((props) => {
   const [review, setReview] = useState<IReview | null>(null);
   const [isChange, setChange] = useState(false);
 
-  const queryClient = useQueryClient();
+  const { mutationRemove, mutationUpdate } = useMutationReview(reviews);
 
-  const mutationRemove = useMutation({
-    mutationFn: deleteReviewById,
-    onSuccess: (_, id) => {
-      reviewStore.deleteReview(id);
-      queryClient.setQueryData([EndpointsEnum.review], () => ({ data: reviews, total: reviews.length }));
-      queryClient.invalidateQueries({ queryKey: [EndpointsEnum.review] });
-      navigate(RoutePath.reviews.path);
-    },
-  });
+  useEffect(() => {
+    const request = async () => {
+      await incrementViewdReview(id);
+    };
 
-  const mutationUpdate = useMutation({
-    mutationFn: changeReviewById,
-    onSuccess: (_, review) => {
-      reviewStore.changeReview(review);
-      setReview(review);
-      queryClient.setQueryData([EndpointsEnum.review], () => ({ data: reviews, total: reviews.length }));
-      queryClient.invalidateQueries({ queryKey: [EndpointsEnum.review] });
-      setChange(false);
-    },
-  });
+    request();
+  }, []);
 
   const handleRemove = async (id: string) => {
-    mutationRemove.mutate(id);
+    mutationRemove.mutate(id, {
+      onSuccess: () => {
+        reviewStore.deleteReview(id);
+        navigate(RoutePath.reviews.path);
+      },
+    });
   };
 
   const handleUpdate = async (review: IReview, clearFunc: () => void) => {
-    mutationUpdate.mutate(review, { onSuccess: clearFunc });
+    mutationUpdate.mutate(review, {
+      onSuccess: () => {
+        reviewStore.changeReview(review);
+        setReview(review);
+        setChange(false);
+        clearFunc();
+      },
+    });
   };
 
   const { isLoading, isError } = useQuery({
-    queryKey: [EndpointsEnum.review],
+    queryKey: [EndpointsEnum.review, id],
     queryFn: async () => {
       const data = await getReviewById(id);
 
@@ -73,14 +72,6 @@ export const ReviewDetailWidget: React.FC<IProps> = observer((props) => {
     enabled: shouldFetch,
   });
 
-  useQuery({
-    queryKey: ["test"],
-    queryFn: async () => {
-      const data = await incrementViewdReview(id);
-      return data;
-    },
-  });
-
   useEffect(() => {
     const data = reviews.find((item) => item.id === id);
 
@@ -92,31 +83,8 @@ export const ReviewDetailWidget: React.FC<IProps> = observer((props) => {
     setReview(data);
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className={`w-full items-center flex justify-center ${className}`} style={css}>
-        <div className="spinner-border text-primary mt-2" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className={`w-full items-center flex justify-center ${className}`} style={css}>
-        <div className="flex flex-row items-center gap-1">
-          <MdError className="fill-red-500" />
-          <p className="text-red-500">Ошибка при загрузке отзывов</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <>
-      <button onClick={() => console.log(queryClient.getQueryData([EndpointsEnum.review]))}>ывпвып</button>
-
+    <StatusData className={className} css={css} isLoading={isLoading} isError={isError}>
       {review !== null && (
         <ReviewDetail
           className={className}
@@ -132,11 +100,9 @@ export const ReviewDetailWidget: React.FC<IProps> = observer((props) => {
               categoryConfig={categoriesConfig}
             />
           }
-          featureSlot={
-            <ReviewActionsRow onChange={() => setChange(true)} onDelete={() => handleRemove(review.id)} />
-          }
+          featureSlot={<ReviewActionsRow onChange={() => setChange(true)} onDelete={() => handleRemove(review.id)} />}
         />
       )}
-    </>
+    </StatusData>
   );
 });

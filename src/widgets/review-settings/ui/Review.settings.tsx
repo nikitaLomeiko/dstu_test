@@ -5,6 +5,7 @@ import { FaSave } from "react-icons/fa";
 import { filterStore } from "features/review-filter/model";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
+import { Toast } from "shared/ui/toast";
 
 export const ReviewSettings: React.FC<IBaseComponent> = observer((props) => {
   const { className, css } = props;
@@ -14,10 +15,6 @@ export const ReviewSettings: React.FC<IBaseComponent> = observer((props) => {
   const handleSaveFilter = () => {
     filterStore.saveToLocalStorage()
     setShow(true)
-
-    setTimeout(() => {
-      setShow(false)
-    }, 5000);
   }
 
   return (
@@ -44,13 +41,7 @@ export const ReviewSettings: React.FC<IBaseComponent> = observer((props) => {
           <DateSort />
         </div>
       </div>
-      <div className={`toast !bg-green-600 z-90 fixed !bottom-3 !right-0 !m-auto !left-0 ${showToast ? 'block!' : '!hiden'}`} role="alert" aria-live="assertive" aria-atomic="true">
-        <div className="toast-header">
-          <strong className="me-auto">успешно!</strong>
-          <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div className="toast-body">Настройки фильтрации успешно сохранены</div>
-      </div>
+      <Toast onClose={() => setShow(false)} show={showToast} title="Успешно" message="Настройки фильтрации успешно сохранены"/>
     </div>
   );
 });

@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { ReviewDetailWidget } from "widgets/review-detail";
 
-
 export const ReviewDetailPage = () => {
   const {id} = useParams()
 
