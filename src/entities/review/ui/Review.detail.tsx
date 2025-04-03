@@ -48,7 +48,7 @@ export const ReviewDetail: React.FC<IProps> = (props) => {
                 </div>
                 <div className="flex flex-row items-center gap-1">
                   <FaRegCalendarAlt />
-                  <p className="text-[14px]">{dateUpdate === undefined ? date : `изменено: ${dateUpdate}`}</p>
+                  <p className="text-[14px]">{dateUpdate === "" ? date : `изменено: ${dateUpdate}`}</p>
                 </div>
               </div>
               <div>{featureSlot}</div>

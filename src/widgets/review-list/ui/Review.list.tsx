@@ -3,7 +3,7 @@ import { IBaseComponent } from "shared/general/types/base-component.type";
 import { observer } from "mobx-react-lite";
 import { ReviewActionsCol, ReviewForm, useMutationReview } from "features/review-form";
 import { ListWrapper } from "./components/List.wrapper";
-import { useState } from "react";
+import React, { useState } from "react";
 import { categoriesConfig } from "features/review-filter/model/config/categories.config";
 
 export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
