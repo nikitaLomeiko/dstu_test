@@ -15,7 +15,5 @@ export const getPageReview = async (
     BASE_API
   );
 
-  console.log(`${EndpointsEnum.review}?${params !== "" ? `${params}` : ""}&_page=${page}&_limit=${limit}`);
-
   return { data: result.data as IReview[], status: result.status, total: result.total };
 };

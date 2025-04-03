@@ -15,6 +15,7 @@ export const CategoryFilter: React.FC<IBaseComponent> = observer((props) => {
     <div className={`flex flex-wrap gap-2 ${className}`} style={css}>
       {categoriesConfig.map((item, index) => (
         <Chip
+          key={index}
           isActive={categorySelectIds.includes(index)}
           onClick={() => filterStore.toggleSelectCategory(index)}
           value={item}

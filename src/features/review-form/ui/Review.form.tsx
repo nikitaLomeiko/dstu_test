@@ -72,7 +72,7 @@ export const ReviewForm: React.FC<IProps> = (props) => {
             errors.category?.message !== undefined ? "!border-red-500" : ""
           }`}
         >
-          {categoryConfig.map((item, index) => <option selected={index === 0}>{item}</option>)}
+          {categoryConfig.map((item, index) => <option key={index} value={item} selected={index === 0}>{item}</option>)}
         </select>
       </div>
       <div className="mb-3">
