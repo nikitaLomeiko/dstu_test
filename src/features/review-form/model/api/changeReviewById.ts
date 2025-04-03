@@ -8,7 +8,7 @@ export const changeReviewById = async (newReview: IReview): Promise<typeRequestR
     method: "GET",
   });
 
-  if (review.data.length !== 0) {
+  if (review.data.length > 1) {
     throw new Error("Такое имя уже существует");
   }
 
