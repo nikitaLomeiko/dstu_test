@@ -1,6 +1,6 @@
 import { ApiClient, BASE_API, EndpointsEnum } from "shared/api";
 
-export const deleteReviewById = async (id: number): Promise<boolean> => {
+export const deleteReviewById = async (id: string): Promise<boolean> => {
   await ApiClient(
     {
       url: `${EndpointsEnum.review}/${id}`,

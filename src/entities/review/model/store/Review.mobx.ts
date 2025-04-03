@@ -31,7 +31,7 @@ class ReviewStore {
     this.state.count++;
   }
 
-  deleteReview(id: number) {
+  deleteReview(id: string) {
     this.state.reviews = this.state.reviews.filter((review) => review.id !== id);
     this.state.count--;
   }

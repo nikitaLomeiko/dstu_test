@@ -11,11 +11,12 @@ interface IProps extends IBaseComponent {
   initialForm?: Partial<IReview>;
   onPresent: (data: IReview, clearFunc: () => void) => void;
   error?: string;
-  categoryConfig: string[]
+  categoryConfig: string[],
+  isChanged?: boolean
 }
 
 export const ReviewForm: React.FC<IProps> = (props) => {
-  const { className, css, onCancel, initialForm, onPresent, error, categoryConfig } = props;
+  const { className, css, onCancel, initialForm, onPresent, error, categoryConfig, isChanged } = props;
 
   const {
     register,
@@ -30,8 +31,8 @@ export const ReviewForm: React.FC<IProps> = (props) => {
     onPresent(
       {
         ...data,
-        date: initialForm === undefined ? new Date().toLocaleDateString("ru-RU") : data.date,
-        dateUpdate: initialForm === undefined ? undefined : new Date().toLocaleDateString("ru-RU"),
+        date: isChanged ? data.date : new Date().toLocaleDateString("ru-RU"),
+        dateUpdate: isChanged ? new Date().toLocaleDateString("ru-RU"): '',
         timestamp: new Date().getTime()
       },
       () => {

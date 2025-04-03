@@ -12,6 +12,7 @@ export const useIntersectionObserver = <T extends HTMLElement = HTMLElement>(
   options?: IntersectionObserverOptions
 ): [React.RefObject<T | null>, boolean] => {
   const [isIntersecting, setIsIntersecting] = useState(false);
+  const [hasIntersected, setHasIntersected] = useState(false); // Флаг для игнорирования первого вызова
   const ref = useRef<T | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
@@ -20,11 +21,16 @@ export const useIntersectionObserver = <T extends HTMLElement = HTMLElement>(
 
     const { root = null, rootMargin = "0px", threshold = 0, triggerOnce = false, onIntersect } = options || {};
 
-    // Функция обработки пересечения
     const handleIntersect: IntersectionObserverCallback = ([entry]) => {
       const isElementIntersecting = entry.isIntersecting;
 
-      // Если передан callback для custom обработки
+      // Игнорируем первый вызов
+      if (!hasIntersected) {
+        setHasIntersected(true);
+        return;
+      }
+
+      // Вызываем пользовательский коллбэк
       if (onIntersect) {
         onIntersect(isElementIntersecting);
       }
@@ -32,13 +38,12 @@ export const useIntersectionObserver = <T extends HTMLElement = HTMLElement>(
       // Обновляем состояние
       setIsIntersecting(isElementIntersecting);
 
-      // Останавливаем наблюдение, если element пересек экран и triggerOnce активирован
+      // Останавливаем наблюдение, если triggerOnce активирован
       if (isElementIntersecting && triggerOnce && observerRef.current) {
         observerRef.current.disconnect();
       }
     };
 
-    // Создаем новый IntersectionObserver
     observerRef.current = new IntersectionObserver(handleIntersect, {
       root,
       rootMargin,
@@ -46,18 +51,16 @@ export const useIntersectionObserver = <T extends HTMLElement = HTMLElement>(
     });
 
     const currentRef = ref.current;
-    // Начинаем отслеживание, если ref на элемент существует
     if (currentRef) {
       observerRef.current.observe(currentRef);
     }
 
-    // Очищаем наблюдателя при размонтировании компонента
     return () => {
       if (observerRef.current && currentRef) {
         observerRef.current.unobserve(currentRef);
       }
     };
-  }, [options]); // Эффект срабатывает при изменении опций
+  }, [options, hasIntersected]); // Добавили зависимость от `hasIntersected`
 
   return [ref, isIntersecting];
 };

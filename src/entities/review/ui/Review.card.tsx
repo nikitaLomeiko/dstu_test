@@ -3,8 +3,10 @@ import { IReview } from "../model/types";
 import { Rating } from "shared/ui/rating";
 import { HiDotsVertical } from "react-icons/hi";
 import { ReviewHeader } from "./components/ReviewHeader";
+import { useNavigate } from "react-router-dom";
+import { RoutePath } from "shared/config/route";
 
-interface IProps extends Omit<IReview, "id">, IBaseComponent {
+interface IProps extends Omit<IReview, 'timestamp'>, IBaseComponent {
   featureSlot?: React.ReactNode;
   formSlot?: React.ReactNode;
   isChange?: boolean;
@@ -22,8 +24,11 @@ export const ReviewCard: React.FC<IProps> = (props) => {
     comment,
     featureSlot,
     formSlot,
-    isChange = false,
+    isChange = false, 
+    id,
   } = props;
+
+  const navigator = useNavigate()
 
   return (
     <div className={`card !w-full relative ${className}`} style={{ width: "18rem", ...css }}>
@@ -42,11 +47,11 @@ export const ReviewCard: React.FC<IProps> = (props) => {
             <div className="mt-2">
               <div className="flex flex-row gap-2 !items-center">
                 <Rating rating={rating} />
-                <p className="opacity-50">{dateUpdate === undefined ? date : `изменено: ${dateUpdate}`}</p>
+                <p className="opacity-50">{dateUpdate === "" ? date : `изменено: ${dateUpdate}`}</p>
               </div>
               <p className="card-text mt-1 overflow-hidden line-clamp-4">{comment}</p>
             </div>
-            <button type="button" className="btn btn-link !p-0 mt-2">
+            <button type="button" onClick={() => navigator(`${RoutePath.reviewDetail.path}${id}`)} className="btn btn-link !p-0 mt-2">
               Читать больше
             </button>
           </div>

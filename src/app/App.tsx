@@ -21,6 +21,6 @@ const App = observer(() => {
       </LayoutApp>
     </QueryClientProvider>
   );
-})
+});
 
 export default App;

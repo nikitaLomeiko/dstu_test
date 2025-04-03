@@ -13,7 +13,7 @@ export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
     state: { reviews },
   } = reviewStore;
 
-  const [changedId, setChangedId] = useState<number | null>(null);
+  const [changedId, setChangedId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   const mutationRemove = useMutation({
@@ -35,39 +35,47 @@ export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
     },
   });
 
-  const handleRemove = async (id: number) => {
+  const handleRemove = async (id: string) => {
     mutationRemove.mutate(id);
   };
 
   const handleUpdate = async (review: IReview, clearFunc: () => void) => {
-    mutationUpdate.mutate(review, {onSuccess: clearFunc});
+    mutationUpdate.mutate(review, { onSuccess: clearFunc });
   };
 
   return (
     <ListWrapper {...props}>
-      {reviews.length > 0 ? 
-      (<>
-      {reviews.map((review) => (
-        <ReviewCard
-          key={review.id}
-          {...review}
-          isChange={review.id === changedId}
-          featureSlot={
-            <ReviewActionsCol onChange={() => setChangedId(review.id)} onDelete={() => handleRemove(review.id)} />
-          }
-          formSlot={
-            <ReviewForm
-            categoryConfig={categoriesConfig}
-              error={mutationUpdate.error?.message}
-              initialForm={review}
-              onPresent={handleUpdate}
-              onCancel={() => setChangedId(null)}
-              className="!p-5"
+      {reviews.length > 0 ? (
+        <>
+          {reviews.map((review) => (
+            <ReviewCard
+              key={review.id}
+              {...review}
+              isChange={review.id
+                 === changedId}
+              featureSlot={
+                <ReviewActionsCol
+                  onChange={() => setChangedId(review.id)}
+                  onDelete={() => handleRemove(review.id)}
+                />
+              }
+              formSlot={
+                <ReviewForm
+                  isChanged
+                  categoryConfig={categoriesConfig}
+                  error={mutationUpdate.error?.message}
+                  initialForm={review}
+                  onPresent={handleUpdate}
+                  onCancel={() => setChangedId(null)}
+                  className="!p-5"
+                />
+              }
             />
-          }
-        />
-      ))}
-      </>) : (<p className="text-gray-700 text-center mt-5">Отзывов нет</p>)}
+          ))}
+        </>
+      ) : (
+        <p className="text-gray-700 text-center mt-5">Отзывов нет</p>
+      )}
     </ListWrapper>
   );
 });
