@@ -4,18 +4,26 @@ import { observer } from "mobx-react-lite";
 import { ReviewActionsCol, ReviewForm, useMutationReview } from "features/review-form";
 import { ListWrapper } from "./components/List.wrapper";
 import React, { useState } from "react";
-import { categoriesConfig } from "features/review-filter/model/config/categories.config";
+import { categoriesConfig } from "features/review-filter";
 
 export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
   const {
     state: { reviews },
   } = reviewStore;
 
+  const [removedId, setRemovedId] = useState<string | null>(null);
   const [changedId, setChangedId] = useState<string | null>(null);
   const { mutationRemove, mutationUpdate } = useMutationReview(reviews);
 
   const handleRemove = async (id: string) => {
-    mutationRemove.mutate(id, { onSuccess: () => reviewStore.deleteReview(id) });
+    mutationRemove.mutate(id, {
+      onSuccess: () => {
+        setRemovedId(id);
+        setTimeout(() => {
+          reviewStore.deleteReview(id);
+        }, 500);
+      },
+    });
   };
 
   const handleUpdate = async (review: IReview, clearFunc: () => void) => {
@@ -34,6 +42,7 @@ export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
         <>
           {reviews.map((review) => (
             <ReviewCard
+              isRemoved={review.id === removedId}
               key={review.id}
               {...review}
               isChange={review.id === changedId}

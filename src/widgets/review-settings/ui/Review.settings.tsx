@@ -22,7 +22,7 @@ export const ReviewSettings: React.FC<IBaseComponent> = observer((props) => {
       <div className="container-md relative">
         <div className="flex flex-row items-center gap-2 lg:!gap-5 absolute top-0 right-2">
           <button onClick={() => handleSaveFilter()}>
-            <FaSave className="size-4 lg:size-5" />
+            <FaSave className="size-4 lg:size-5 transition-colors hover:fill-blue-600" />
           </button>
           <button
             onClick={() => filterStore.clearAll()}
@@ -41,7 +41,7 @@ export const ReviewSettings: React.FC<IBaseComponent> = observer((props) => {
           <DateSort />
         </div>
       </div>
-      <Toast onClose={() => setShow(false)} show={showToast} title="Успешно" message="Настройки фильтрации успешно сохранены"/>
+      <Toast className="!bg-green-600" onClose={() => setShow(false)} show={showToast} title="Успешно" message="Настройки фильтрации успешно сохранены"/>
     </div>
   );
 });

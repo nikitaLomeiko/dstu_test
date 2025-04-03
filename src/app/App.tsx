@@ -16,9 +16,9 @@ const App = observer(() => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LayoutApp>
-        <Routing />
-      </LayoutApp>
+        <LayoutApp>
+          <Routing />
+        </LayoutApp>
     </QueryClientProvider>
   );
 });
