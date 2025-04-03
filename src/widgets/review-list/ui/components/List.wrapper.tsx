@@ -1,39 +1,51 @@
 import { getPageReview, reviewStore } from "entities/review";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdError } from "react-icons/md";
 import { useQuery } from "@tanstack/react-query";
 import { EndpointsEnum } from "shared/api";
 import { IBaseComponent } from "shared/general/types/base-component.type";
 import { useIntersectionObserver } from "shared/lib/hooks/useIntersectionObserver";
+import { filterStore } from "features/review-filter/model";
+import { observer } from "mobx-react-lite";
 
 interface IProps extends IBaseComponent {
   children: React.ReactNode;
 }
 
-export const ListWrapper: React.FC<IProps> = (props) => {
+export const ListWrapper: React.FC<IProps> = observer((props) => {
   const { className, css, children } = props;
 
   const {
     state: { count, limit, page },
   } = reviewStore;
 
+  const {
+    state: { queryString },
+  } = filterStore;
+
   const [shouldFetch, setShouldFetch] = useState(true);
+
+  const [ref] = useIntersectionObserver<HTMLDivElement>({ onIntersect: setShouldFetch });
+
+  useEffect(() => {
+    setShouldFetch(true)
+    reviewStore.clearAll()
+  }, [queryString])
 
   const { isLoading, isError } = useQuery({
     queryKey: [EndpointsEnum.review],
     queryFn: async () => {
-      const data = await getPageReview(page, limit);
-      
+      const data = await getPageReview(page, limit, queryString);
+
       if (data.status === 200) {
         reviewStore.addListReview(data.data, Number(data.total));
+        setShouldFetch(false)
       }
 
-      return data
+      return data;
     },
     enabled: shouldFetch,
   });
-
-  const [ref] = useIntersectionObserver<HTMLDivElement>({ onIntersect: setShouldFetch });
 
   return (
     <div className={className} style={css}>
@@ -58,7 +70,7 @@ export const ListWrapper: React.FC<IProps> = (props) => {
         </div>
       )}
       <div className="flex flex-col gap-4 mt-2">{children}</div>
-      <div ref={ref}></div>
+      {page*limit < count+limit && <div ref={ref}>писюн</div>}
     </div>
   );
-};
+});

@@ -44,6 +44,8 @@ export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
 
   return (
     <ListWrapper {...props}>
+      {reviews.length > 0 ? 
+      (<>
       {reviews.map((review) => (
         <ReviewCard
           key={review.id}
@@ -63,6 +65,7 @@ export const ReviewList: React.FC<IBaseComponent> = observer((props) => {
           }
         />
       ))}
+      </>) : (<p className="text-gray-700 text-center mt-5">Отзывов нет</p>)}
     </ListWrapper>
   );
 });

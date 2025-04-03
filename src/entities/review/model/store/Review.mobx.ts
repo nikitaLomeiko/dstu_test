@@ -42,6 +42,12 @@ class ReviewStore {
       this.state.reviews[index] = newReview;
     }
   }
+
+  clearAll() {
+    this.state.reviews = [];
+    this.state.page = 1;
+    this.state.count = 0;
+  }
 }
 
 export const reviewStore = new ReviewStore();
