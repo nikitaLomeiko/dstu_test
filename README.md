@@ -1,54 +1,48 @@
-# React + TypeScript + Vite
+# Отзывы
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Тестовое задание для ДГТУ
 
-Currently, two official plugins are available:
+### Запуск
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Для запуска приложения используется моковый API от **Json-server**.
 
-## Expanding the ESLint configuration
+1. **Запуск сервера**:
+   Для того чтобы запустить сервер, выполните команду:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+   ```bash
+   npm run server
+   ```
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+   Эта команда запустит сервер на порте 5000.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. **Запуск клиента**:
+   Чтобы запустить клиентскую часть, выполните следующие шаги:
+   - Сначала соберите минифицированную и оптимизированную сборку проекта:
+      ```bush
+      npm run build
+      ```
+      Это создаст готовую версию проекта для продакшн.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+    - После этого, чтобы просмотреть и протестировать продукт, используйте    команду:
+      ```bush
+      npm run preview
+      ```
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+### Описание
+
+Задание нацелено на демонстрацию лучших своих навыков, так-как затрагивает довольно обширный спектор навыков, умещая это всё в маленькой задаче. К данному заданию я подошел серьёзно, пусть и не в полной мере, но решил показать на что способны мои руки.
+\
+\
+Под задачи проекта я решил взять минимальные библиотеки чтобы не вырос конечный бандл проекта, таким образом в проекте собраны слеюдущие технологии:
+
+- bootstrap + tailwind - проект не большой, соответственно и не требует много компонентов, поэтому я взял самый лёгкий и простой компонент на мой взгряд
+- mobx + react-query + axios - именно данная связка для работы с данными и запросами показалась мне самой подходящей под поставленные задачи, максимально легки в развёртывании, а так-же не занимают много места
+- react-hook-form - при помощи него я сократил много времени на валидации форм, получив качественную, работающую валидацию, настроенную буквально в пару кликов
+- framer-emotion - так же проект имеет некоторые анимации, решил использовать данную технологию, чтобы полностью избежать прямое взаимодейсвтие с css файлами
+
+
+Так же по мимо этого в проекте настроен PWA, что позволяет получить доступ к отзывам даже без подключения к интернету и использовать сайт как отдельное приложение.
+
+
+Прошу подметить что я придержался подходу Mobile-first, приложение в приоритетете адаптировано под мобильные устройства, а уже после переходят под устройства пользователя
+
