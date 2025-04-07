@@ -6,7 +6,7 @@ import { RoutePath } from "shared/config/route";
 
 export const Routes: RouteProps[] = [
     {
-        path: '/',
+        path: '/dstu_test',
         element: <ReviewsPageLazy/>
     },
     {

@@ -9,11 +9,11 @@ enum enumPath {
 export const RoutePath: Record<enumPath, IRoute> = {
   [enumPath.reviews]: {
     path: "/reviews",
-    fullPath: "/reviews",
+    fullPath: "/dstu_test/reviews",
   },
   [enumPath.reviewDetail]: {
     path: "/reviews/",
-    fullPath: "/reviews/:id",
+    fullPath: "/dstu_test/reviews/:id",
   },
   [enumPath.notFound]: {
     path: "/not-found",
