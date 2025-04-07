@@ -58,4 +58,5 @@ export default defineConfig({
       server: "/server",
     },
   },
+  base: "dstu_test",
 });
